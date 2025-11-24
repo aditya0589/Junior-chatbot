@@ -1,0 +1,37 @@
+yarakaraju Aditya is a computer science student pursuing a bachelor’s degree in Jawaharlal Nehru technological University Hyderabad with a CGPA of 8.6, with strong interests in data science, machine learning, deep learning, web development, and AI application development. Over time, he has built multiple AI-driven systems and frequently works with modern LLM frameworks such as LangChain, LangGraph, and vector databases like Pinecone and Chroma. He actively participates in Kaggle competitions to strengthen his machine learning skills, and he has already completed the Introduction to machine Learning and Introduction to Deep Learning certification from Kaggle. He has multiple course certificates from IBM skillsbuild in the domains of AI fundamentals and Big Data which are displayed in his linkedin profile. He also attended his first hackathon on October 18, 2024, where he received a participation certificate. He is popularly known as "code master" among his peers and friends in college. 
+His areas of interest are machine Learning, Large Language models and their applications in Natural Language processing. Agentic AI and autonomous AI agents.
+
+He participated in Composite Excavate and reached the final in March 2025 Held at IIT karagpur, where he delivered and presented his ML model to a panel of Judges about classification of Perovskite based compounds given their various physical and chemical properties. He and his team stood at top 10. 
+
+
+He is active in building various other AI and Machine Learning applications which are there in his github. These include, ASTRA- AI chatbot, Prompt to COurse, Project Debator to debate with an AI model, GenDS to generate Data Science code with just natural language etc. 
+
+His technical skills span Python, Java, competitive coding, Tableau, database management, and full-stack application development, machine learning, deep learning, statistics, generative AI, Agentiv AI, langchain, langgraph, langsmith, sklearn, mongoDB, AWS, Apache Hadoopm Apache Spark, Apache Kafka. He often builds practical systems such as customer churn prediction tools, RAG pipelines, embedding workflows, and domain-specific GenAI applications. He prefers deploying his applications using frameworks such as Flask and Streamlit, and he frequently experiments and prototypes in Google Colab.
+
+Aditya has developed several projects that reflect his interest in AI, data systems, and real-world applications. His major projects include Tutorbot.ai and Medpal. 
+
+Another important project is a Personalized RAG Chatbot, where he built a retrieval-augmented generation pipeline using LangChain, Chroma, and transformer-based embedding models. The chatbot is capable of answering questions about uploaded documents, personal context, and domain-specific knowledge. The system includes chunking strategies, vector storage, query retrieval, and a Streamlit-based UI. (GitHub: https://github.com/dummy/personal-rag-bot
+He developed various Agentic AI and Agents including a data analytics ReACT agent using langchain.
+
+
+He is also developing various projects on his own and with his teammates. He debeloped Tutorbot.ai along with his friend Viswanath. Tutorbot.ai is an AI powered learning platform where user can get their doubts solved, attempt quizes and track progress using AI. It was built in python, flask and langchain with Google generativeai and gemini models.
+
+He also built MedPal, an interactive medical assistant along with two other teammates. Medpal provides an AI chatbot for answering medical related questions, provides personlised diet and lifestyle recommendations, machine learning models to predict various deseases including multiple cancers, diabetes, liver disease etc and a RAG system to process and chat with the user's own medical documents including test reports and X ray images. It was built in langchain, flask, python, html, css, pinecone with RAG pipleines. In this project, Aditya personally lead the development of all Ai modules including the RAG system and chatbots. 
+
+He built Imagepro, an AI powered image generation application using gemini and streamlit. It allows users to not only generate images froma given prompt but also edit existing images using natural language and chat with them. The product has gained over 10 plus active users. 
+ 
+
+Beyond technical work, Aditya is also a history buff working on post 1910 history. His specialization includes the second world war, cold war, korea and Afghanistan. He is deeply interested in the North African campaign and the Italian front. He is also interested in the post war history of the world. He is active reader of fiction, sci-fi and historical drama. Beyond this, he is a dedicated game of thrones and HBO fan. 
+
+He enjoys coding, debugging, creative writing, and building things that people can actually use. When given explanations, he appreciates diagrams, examples, conceptual models, or architecture breakdowns that help him implement ideas effectively. His frequently explors topics include fixing deployment errors, building vector embedding pipelines, constructing RAG workflows, integrating modern LLMs such as Gemini and OpenAI models, and creating GenAI tools for both general and specialized domains, machine learning and MLops tools, Big Data and Data science, and software development tools. 
+
+He maintains an online presence for showcasing his work and collaborating with others. His GitHub profile, available at https://github.com/dummy-profile
+, contains repositories related to RAG systems, ML experiments, deep learning notebooks, and full-stack applications. His LinkedIn profile at https://www.linkedin.com/in/yarakaraju-aditya-310a20306/
+ highlights his academic progress, certifications, and internship interests. For communication, he can be reached at yraditya895@gmail.com
+, which he uses for professional and project-related discussions.
+
+Altogether, Aditya is a multidisciplinary builder, writer, and learner, combining technical expertise, creativity, and a strong interest in artificial intelligence ad data Science to build meaningful projects and continuously expand his knowledge.
+
+Certifications links:
+Big Data Foundation level 2: IBM SkillsBuild - https://www.credly.com/badges/561f95e2-dec3-4499-9a2e-909afc5c7f43/linked_in_profile
+Artificial Intelligence Fundamentals - https://www.credly.com/badges/c590d664-916d-496f-a31a-6b3526c1bcc7/linked_in_profile
