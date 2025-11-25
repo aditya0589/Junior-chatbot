@@ -10,3 +10,4 @@ langchain-pinecone
 sentence-transformers
 pytest
 httpx
+psutil
