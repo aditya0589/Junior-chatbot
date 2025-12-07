@@ -1,5 +1,6 @@
 import os
 import contextlib
+import asyncio
 try:
     import psutil
 except ImportError:
@@ -10,9 +11,8 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 # Heavy imports moved to top-level to ensure they are loaded at startup
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
@@ -21,12 +21,11 @@ load_dotenv()
 
 # Global variable for the chain
 rag_chain = None
+init_task = None
 
-@contextlib.asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup logic
+async def initialize_rag_chain():
     global rag_chain
-    print("STARTUP: Initializing RAG chain...")
+    print("STARTUP: Initializing RAG chain in background...")
     
     pid = os.getpid()
     if psutil:
@@ -34,8 +33,8 @@ async def lifespan(app: FastAPI):
         print(f"Memory before init: {mem_before:.2f} MB")
 
     try:
-        # 1. Initialize Embeddings
-        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        # 1. Initialize Embeddings (Google)
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
         
         # 2. Initialize Vector Store
         index_name = os.environ.get("PINECONE_INDEX_NAME")
@@ -83,12 +82,16 @@ async def lifespan(app: FastAPI):
              
     except Exception as e:
         print(f"CRITICAL ERROR during startup: {e}")
-        # We might want to raise here to prevent the app from starting in a broken state
-        raise e
-        
+
+@contextlib.asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start initialization in background
+    global init_task
+    init_task = asyncio.create_task(initialize_rag_chain())
+    
     yield
     
-    # Shutdown logic (if any)
+    # Shutdown logic
     print("SHUTDOWN: Cleaning up...")
 
 app = FastAPI(title="RAG Application", lifespan=lifespan)
@@ -100,7 +103,7 @@ class QueryRequest(BaseModel):
 async def query_endpoint(request: QueryRequest):
     global rag_chain
     if rag_chain is None:
-        raise HTTPException(status_code=503, detail="Service not initialized")
+        raise HTTPException(status_code=503, detail="Service is starting up, please try again in a few seconds.")
         
     try:
         response = rag_chain.invoke({"input": request.query})
@@ -111,5 +114,7 @@ async def query_endpoint(request: QueryRequest):
 
 @app.get("/")
 async def root():
+    if rag_chain is None:
+        return {"message": "RAG Application is starting up..."}
     return {"message": "RAG Application is running. Send POST requests to /query."}
 
