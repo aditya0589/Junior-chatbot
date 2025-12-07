@@ -1,47 +1,39 @@
 import os
+import contextlib
 try:
     import psutil
 except ImportError:
     psutil = None
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+# Heavy imports moved to top-level to ensure they are loaded at startup
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_pinecone import PineconeVectorStore
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate
+
 load_dotenv()
-
-# Memory logging at startup
-pid = os.getpid()
-if psutil:
-    mem_usage = psutil.Process(pid).memory_info().rss / 1024 ** 2
-    print(f"STARTUP: pid={pid}, mem_mb={mem_usage:.2f}")
-else:
-    print(f"STARTUP: pid={pid}, psutil not installed, memory logging disabled")
-
-app = FastAPI(title="RAG Application")
-
-class QueryRequest(BaseModel):
-    query: str
 
 # Global variable for the chain
 rag_chain = None
 
-def get_rag_chain():
+@contextlib.asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
     global rag_chain
-    if rag_chain is None:
-        print("Initializing RAG chain (Lazy Loading)...")
-        if psutil:
-            mem_before = psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2
-            print(f"Memory before init: {mem_before:.2f} MB")
+    print("STARTUP: Initializing RAG chain...")
+    
+    pid = os.getpid()
+    if psutil:
+        mem_before = psutil.Process(pid).memory_info().rss / 1024 ** 2
+        print(f"Memory before init: {mem_before:.2f} MB")
 
-        # Lazy imports to save memory at startup
-        from langchain_huggingface import HuggingFaceEmbeddings
-        from langchain_pinecone import PineconeVectorStore
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        from langchain.chains import create_retrieval_chain
-        from langchain.chains.combine_documents import create_stuff_documents_chain
-        from langchain_core.prompts import ChatPromptTemplate
-
+    try:
         # 1. Initialize Embeddings
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         
@@ -84,18 +76,34 @@ def get_rag_chain():
         rag_chain = create_retrieval_chain(retriever, question_answer_chain)
         
         if psutil:
-            mem_after = psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2
+            mem_after = psutil.Process(pid).memory_info().rss / 1024 ** 2
             print(f"RAG Chain initialized. Memory after init: {mem_after:.2f} MB")
         else:
              print("RAG Chain initialized.")
+             
+    except Exception as e:
+        print(f"CRITICAL ERROR during startup: {e}")
+        # We might want to raise here to prevent the app from starting in a broken state
+        raise e
         
-    return rag_chain
+    yield
+    
+    # Shutdown logic (if any)
+    print("SHUTDOWN: Cleaning up...")
+
+app = FastAPI(title="RAG Application", lifespan=lifespan)
+
+class QueryRequest(BaseModel):
+    query: str
 
 @app.post("/query")
 async def query_endpoint(request: QueryRequest):
+    global rag_chain
+    if rag_chain is None:
+        raise HTTPException(status_code=503, detail="Service not initialized")
+        
     try:
-        chain = get_rag_chain()
-        response = chain.invoke({"input": request.query})
+        response = rag_chain.invoke({"input": request.query})
         return {"answer": response["answer"], "context": [doc.page_content for doc in response["context"]]}
     except Exception as e:
         print(f"Error during query: {e}")
@@ -104,3 +112,4 @@ async def query_endpoint(request: QueryRequest):
 @app.get("/")
 async def root():
     return {"message": "RAG Application is running. Send POST requests to /query."}
+
